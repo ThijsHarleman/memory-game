@@ -141,8 +141,22 @@ h1 {
     font-weight: 600;
 }
 
+.tile-cover {
+    display: block;
+}
+
 .tile-icon {
     display: none;
+}
+
+.tile--preview .tile-cover {
+    display: none;
+}
+
+.tile--preview .tile-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .game-footer {

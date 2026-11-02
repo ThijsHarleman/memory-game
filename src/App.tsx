@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GAME_COLORS } from "./game/colors";
 import { GAME_ICONS } from "./game/icons";
 import { createBoard } from "./game/createBoard";
@@ -8,8 +8,11 @@ import type { Tile } from "./game/types";
 
 import "./index.css";
 
+const PREVIEW_DURATION_MS = 10_000;
+
 function App() {
     const [board] = useState<Tile[]>(() => createBoard());
+    const [isPreviewing, setIsPreviewing] = useState(true);
 
     const { columns } = getBoardDimensions(
         GAME_ICONS.length,
@@ -23,6 +26,14 @@ function App() {
     const colorById = new Map(
         GAME_COLORS.map((color) => [color.id, color]),
     );
+
+    useEffect(() => {
+        const timeoutId = window.setTimeout(() => {
+            setIsPreviewing(false);
+        }, PREVIEW_DURATION_MS);
+
+        return () => window.clearTimeout(timeoutId);
+    }, []);
 
     return (
         <main className="app">
@@ -68,11 +79,15 @@ function App() {
 
                         return (
                             <div
-                                className="tile"
+                                className={isPreviewing ? "tile tile--preview" : "tile"}
                                 key={tile.id}
-                                aria-label={`Covered tile ${tile.id + 1}`}
+                                aria-label={
+                                    isPreviewing
+                                        ? `Tile ${tile.id + 1}: ${icon.label}, ${color.label}`
+                                        : `Covered tile ${tile.id + 1}`
+                                }
                             >
-                                ?
+                                <span className="tile-cover">?</span>
                                 <span className="tile-icon">
                                     <GameIcon icon={icon} color={color.value} />
                                 </span>

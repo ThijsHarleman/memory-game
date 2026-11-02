@@ -1,9 +1,33 @@
+import { useState } from "react";
+import { GAME_COLORS } from "./game/colors";
+import { GAME_ICONS } from "./game/icons";
+import { createBoard } from "./game/createBoard";
+import { getBoardDimensions } from "./game/getBoardDimensions";
+import GameIcon from "./components/GameIcon";
+import type { Tile } from "./game/types";
+
+import "./index.css";
+
 function App() {
+    const [board] = useState<Tile[]>(() => createBoard());
+
+    const { columns } = getBoardDimensions(
+        GAME_ICONS.length,
+        GAME_COLORS.length,
+    );
+
+    const iconById = new Map(
+        GAME_ICONS.map((icon) => [icon.id, icon]),
+    );
+
+    const colorById = new Map(
+        GAME_COLORS.map((color) => [color.id, color]),
+    );
+
     return (
         <main className="app">
             <header className="game-header">
-                <p className="eyebrow">MEMORY GAME</p>
-                <h1>Mind Match</h1>
+                <h1>MEMORY GAME</h1>
                 <p className="subtitle">
                     Remember the details. Find the match.
                 </p>
@@ -27,19 +51,34 @@ function App() {
             <section className="board-section" aria-label="Memory board">
                 <div className="board-heading">
                     <h2>Memory board</h2>
-                    <span className="tile-count">30 tiles</span>
+                    <span className="tile-count">{board.length} tiles</span>
                 </div>
 
-                <div className="board">
-                    {Array.from({ length: 30 }, (_, index) => (
-                        <div
-                            className="tile"
-                            key={index}
-                            aria-label={`Covered tile ${index + 1}`}
-                        >
-                            ?
-                        </div>
-                    ))}
+                <div
+                    className="board"
+                    style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+                >
+                    {board.map((tile) => {
+                        const icon = iconById.get(tile.iconId);
+                        const color = colorById.get(tile.colorId);
+
+                        if (!icon || !color) {
+                            throw new Error("Tile references an unknown icon or colour.");
+                        }
+
+                        return (
+                            <div
+                                className="tile"
+                                key={tile.id}
+                                aria-label={`Covered tile ${tile.id + 1}`}
+                            >
+                                ?
+                                <span className="tile-icon">
+                                    <GameIcon icon={icon} color={color.value} />
+                                </span>
+                            </div>
+                        );
+                    })}
                 </div>
             </section>
 

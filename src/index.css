@@ -41,18 +41,6 @@ button {
     text-align: center;
 }
 
-.eyebrow,
-.info-label {
-    color: var(--color-muted);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-}
-
-.eyebrow {
-    margin-bottom: 8px;
-}
-
 h1 {
     margin: 0;
     font-size: clamp(2rem, 6vw, 3rem);
@@ -142,6 +130,7 @@ h1 {
 
 .tile {
     display: grid;
+    position: relative;
     aspect-ratio: 1;
     place-items: center;
     border: 0;
@@ -150,6 +139,10 @@ h1 {
     color: white;
     font-size: clamp(1rem, 4vw, 1.5rem);
     font-weight: 600;
+}
+
+.tile-icon {
+    display: none;
 }
 
 .game-footer {
